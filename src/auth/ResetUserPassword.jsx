@@ -1,14 +1,13 @@
-// AdminLogin.js
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { LOGIN_ADMIN } from '../graphql/mutations';
+import { RESET_USER_PASSWORD } from '../graphql/mutations';
 import { useNavigate } from 'react-router-dom';
 
-const AdminLogin = () => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loginAdmin, { data, loading, error }] = useMutation(LOGIN_ADMIN);
+const ResetUserPassword = () => {
+    const navigate = useNavigate();
+  const [token, setToken] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [resetUserPassword, { data, loading, error }] = useMutation(RESET_USER_PASSWORD);
   const [isShown, setIsShown] = useState(false);
 
   const handleShowClick = () => {
@@ -18,10 +17,10 @@ const AdminLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await loginAdmin({ variables: { email, password } });
-      console.log('Login successful:', response.data.loginAdmin);
+      await resetUserPassword({ variables: { token, newPassword } });
+      navigate('/user-login');
     } catch (err) {
-      console.error('Login error:', err);
+      console.error('Error resetting password:', err);
     }
   };
 
@@ -32,23 +31,23 @@ const AdminLogin = () => {
         className="bg-white dark:bg-black p-6 rounded-lg shadow-md w-full max-w-sm space-y-4"
       >
         <h2 className="text-xl font-bold text-center text-black dark:text-green-600">
-          Admin Login
+          Reset Password
         </h2>
         <div className="space-y-2">
           <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            placeholder="Reset Token"
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
             required
-            className="w-full p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 text-black dark:text-green-600 dark:bg-black"
+            className="w-full p-2 border border-red-500 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600 text-black dark:text-green-600 dark:bg-black"
           />
-            <div className='relative'>
+       <div className='relative'>
                 <input
                 type={isShown ? "text" : "password"}
                 placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
                 required
                 className="w-full p-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600 text-black dark:text-green-600 dark:bg-black"
             />
@@ -58,33 +57,18 @@ const AdminLogin = () => {
             </div>
 
         </div>
-        <div className="text-right">
-            <button onClick={() => navigate("/forgotuserpassword")} className="text-sm text-blue-600 hover:underline">
-              Forgot Password?
-            </button>
-          </div>
         <button
           type="submit"
           disabled={loading}
           className="w-full p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-300 disabled:opacity-50"
         >
-          {loading ? 'Logging in...' : 'Login'}
+          {loading ? 'Resetting...' : 'Reset Password'}
         </button>
-        <div className="text-left">
-        Don't have an account?
-            <button onClick={() => navigate("/create-admin")} className="text-sm text-blue-600 hover:underline px-1">
-              Sign Up For Free
-            </button>
-          </div>
         {error && <p className="text-red-500 text-sm">Error: {error.message}</p>}
-        {data && (
-          <p className="text-green-600 text-sm">
-            Login successful! Welcome {data.loginAdmin.admin.userName}
-          </p>
-        )}
+        {data && <p className="text-green-600 text-sm">{data.resetUserPassword.message}</p>}
       </form>
     </div>
   );
 };
 
-export default AdminLogin;
+export default ResetUserPassword;
