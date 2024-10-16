@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { LOGIN_ADMIN } from '../graphql/mutations';
 import { useNavigate } from 'react-router-dom';
+import { storeToLocalStorage } from '../utils';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -19,11 +20,18 @@ const AdminLogin = () => {
     e.preventDefault();
     try {
       const response = await loginAdmin({ variables: { email, password } });
-      console.log('Login successful:', response.data.loginAdmin);
+      const token = response.data.loginAdmin.token; 
+  
+      // Store the token in localStorage
+      storeToLocalStorage("token", token);
+      
+      navigate('/dashboard');
     } catch (err) {
       console.error('Login error:', err);
     }
   };
+  
+  
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-white dark:bg-black transition-colors duration-300">
@@ -59,7 +67,7 @@ const AdminLogin = () => {
 
         </div>
         <div className="text-right">
-            <button onClick={() => navigate("/forgotuserpassword")} className="text-sm text-blue-600 hover:underline">
+            <button onClick={() => navigate("/forgot-admin-password")} className="text-sm text-blue-600 hover:underline">
               Forgot Password?
             </button>
           </div>

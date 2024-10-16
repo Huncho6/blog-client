@@ -19,6 +19,8 @@ const UserLogin = () => {
     try {
       const response = await loginUser({ variables: { email, password } });
       console.log('Login successful:', response.data.loginUser);
+      localStorage.setItem('token', response.data.loginUser.token);
+      navigate('/dashboard'); // Redirect to the dashboard after login
     } catch (err) {
       console.error('Login error:', err);
     }

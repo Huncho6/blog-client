@@ -20,7 +20,10 @@ const Auth = () => {
         <Route path="/create-admin" element={<CreateAdmin />} />
         <Route path="/create-user" element={<CreateUser />} />
         <Route path="/forgot-user-password" element={<ForgotUserPassword />} />
-        <Route path="/forgot-admin-password" element={<ForgotAdminPassword />} />
+        <Route
+          path="/forgot-admin-password"
+          element={<ForgotAdminPassword />}
+        />
         <Route path="reset-admin-password" element={<ResetAdminPassword />} />
         <Route path="reset-user-password" element={<ResetUserPassword />} />
       </Routes>
